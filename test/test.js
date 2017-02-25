@@ -44,6 +44,17 @@ function seedBlogPostData() {
   return BlogPost.insertMany(seedData);
 }
 
+function generateBlogpost() {
+  return {
+    author: {
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName()
+    },
+    title: faker.lorem.sentence(),
+    content: faker.lorem.text()
+  }
+}
+
 
 
 // describe('blog posts API resource', function() {
@@ -56,15 +67,15 @@ function seedBlogPostData() {
     return seedBlogPostData();
   });
 
-//   afterEach(function() {
-//     // tear down database so we ensure no state from this test
-//     // effects any coming after.
-//     return tearDownDb();
-//   });
-
-//   after(function() {
-//     return closeServer();
-//   });
+  // afterEach(function() {
+  //   // tear down database so we ensure no state from this test
+  //   // effects any coming after.
+  //   return tearDownDb();
+  // });
+  //
+  // after(function() {
+  //   return closeServer();
+  // });
 
 // });
 
@@ -74,14 +85,13 @@ function seedBlogPostData() {
 
 describe('testing the GET endpoint', function() {
 
-    it.skip('getting all objects back', function() {
+    it('getting all objects back', function() {
         let res;
         return chai.request(app)
         .get('/posts')
         .then(function(_res) {
              res = _res;
-             
-	         res.should.have.status(200);
+           res.should.have.status(200);
 	         res.body.should.have.length.of.at.least(1);
 	         return BlogPost.count();
         })
@@ -92,47 +102,37 @@ describe('testing the GET endpoint', function() {
 });
 
     it('checking Get request using path Varible', function() {
-
       let post;
       return BlogPost
       .findOne()
       .exec()
       .then(function(_res) {
-        // console.log(_res);
+      // console.log(_res);
         post = _res
         return chai.request(app)
         .get(`/posts/${post.id}`)
       })
       .then(function(res) {
         res.body.id.should.equal(post.id);
-        console.log(" this is what your looking for " + post);
         res.should.have.status(200)
-      
       })
-     
-      
+
     });
 
+describe('test POST endpoint', function() {
 
+  it('should add a new blogpost', function() {
 
+    const testBlogpost = generateBlogpost()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return chai.request(app)
+    .post('/posts')
+    .send(testBlogpost)
+    .then(function(res) {
+      res.should.have.status(201)
+      res.should.be.json
+      res.body.should.be.a('object')
+      console.log(res.body.id)
+    })
+  })
+})
