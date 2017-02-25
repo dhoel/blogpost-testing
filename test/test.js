@@ -136,3 +136,50 @@ describe('test POST endpoint', function() {
     })
   })
 })
+
+
+
+
+
+describe('test PUT endpoint', function() {
+
+  it('should update an existing blogpost', function(){
+    const updateBlog = {
+      title: "THE TITLE HAS BEEN CHANGEDDDDD"
+    };
+    return BlogPost
+    .findOne()
+    .exec()
+    .then(function(res){
+      updateBlog.id = res.id;
+      return chai.request(app)
+      .put(`/posts/${res.id}`)
+      .send(updateBlog);
+    })
+    .then(function(res){
+      res.should.have.status(201);
+      return BlogPost.findById(updateBlog.id).exec();
+    })
+    .then(function(res){
+      res.title.should.equal(updateBlog.title);
+    });
+
+
+
+
+
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
