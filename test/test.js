@@ -89,13 +89,13 @@ describe('testing the GET endpoint', function() {
         let res;
         return chai.request(app)
         .get('/posts')
-        .then( _res => {
+        .then(function(_res) {
              res = _res;
            res.should.have.status(200);
 	         res.body.should.have.length.of.at.least(1);
 	         return BlogPost.count();
         })
-        .then( count => {
+        .then(function(count) {
             res.body.should.have.length.of(count);
         });
     });
@@ -106,13 +106,13 @@ describe('testing the GET endpoint', function() {
       return BlogPost
       .findOne()
       .exec()
-      .then( _res => {
+      .then(function(_res) {
       // console.log(_res);
         post = _res
         return chai.request(app)
         .get(`/posts/${post.id}`)
       })
-      .then( res => {
+      .then(function(res) {
         res.body.id.should.equal(post.id);
         res.should.have.status(200)
       })
@@ -128,7 +128,7 @@ describe('test POST endpoint', function() {
     return chai.request(app)
     .post('/posts')
     .send(testBlogpost)
-    .then( res => {
+    .then(function(res) {
       res.should.have.status(201)
       res.should.be.json
       res.body.should.be.a('object')
@@ -150,17 +150,17 @@ describe('test PUT endpoint', function() {
     return BlogPost
     .findOne()
     .exec()
-    .then( res => {
+    .then(function(res) {
       updateBlog.id = res.id;
       return chai.request(app)
       .put(`/posts/${res.id}`)
       .send(updateBlog);
     })
-    .then( res => {
+    .then(function(res) {
       res.should.have.status(201);
       return BlogPost.findById(updateBlog.id).exec();
     })
-    .then( res => {
+    .then(function(res) {
       res.title.should.equal(updateBlog.title);
     });
   });
@@ -173,16 +173,16 @@ let blogpost;
     return BlogPost
     .findOne()
     .exec()
-    .then( res => {
+    .then(function(res) {
       blogpost = res;
       return chai.request(app)
       .delete(`/posts/${blogpost.id}`)
     })
-    .then( res => {
+    .then(function(res) {
       res.should.have.status(204);
       return BlogPost.findById(blogpost.id)
     })
-    .then( res => {
+    .then(function(res) {
       should.not.exist(res)
     })
 
