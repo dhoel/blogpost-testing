@@ -67,15 +67,15 @@ function generateBlogpost() {
     return seedBlogPostData();
   });
 
-  // afterEach(function() {
-  //   // tear down database so we ensure no state from this test
-  //   // effects any coming after.
-  //   return tearDownDb();
-  // });
-  //
-  // after(function() {
-  //   return closeServer();
-  // });
+  afterEach(function() {
+    // tear down database so we ensure no state from this test
+    // effects any coming after.
+    return tearDownDb();
+  });
+
+  after(function() {
+    return closeServer();
+  });
 
 // });
 
@@ -85,34 +85,34 @@ function generateBlogpost() {
 
 describe('testing the GET endpoint', function() {
 
-    it.skip('getting all objects back', function() {
+    it('getting all objects back', function() {
         let res;
         return chai.request(app)
         .get('/posts')
-        .then(function(_res) {
+        .then( _res => {
              res = _res;
            res.should.have.status(200);
 	         res.body.should.have.length.of.at.least(1);
 	         return BlogPost.count();
         })
-        .then(function(count) {
+        .then( count => {
             res.body.should.have.length.of(count);
         });
     });
 });
 
-    it.skip('checking Get request using path Varible', function() {
+    it('checking Get request using path Varible', function() {
       let post;
       return BlogPost
       .findOne()
       .exec()
-      .then(function(_res) {
+      .then( _res => {
       // console.log(_res);
         post = _res
         return chai.request(app)
         .get(`/posts/${post.id}`)
       })
-      .then(function(res) {
+      .then( res => {
         res.body.id.should.equal(post.id);
         res.should.have.status(200)
       })
@@ -121,14 +121,14 @@ describe('testing the GET endpoint', function() {
 
 describe('test POST endpoint', function() {
 
-  it.skip('should add a new blogpost', function() {
+  it('should add a new blogpost', function() {
 
     const testBlogpost = generateBlogpost()
 
     return chai.request(app)
     .post('/posts')
     .send(testBlogpost)
-    .then(function(res) {
+    .then( res => {
       res.should.have.status(201)
       res.should.be.json
       res.body.should.be.a('object')
@@ -143,24 +143,24 @@ describe('test POST endpoint', function() {
 
 describe('test PUT endpoint', function() {
 
-  it.skip('should update an existing blogpost', function(){
+  it('should update an existing blogpost', function(){
     const updateBlog = {
       title: "THE TITLE HAS BEEN CHANGEDDDDD"
     };
     return BlogPost
     .findOne()
     .exec()
-    .then(function(res){
+    .then( res => {
       updateBlog.id = res.id;
       return chai.request(app)
       .put(`/posts/${res.id}`)
       .send(updateBlog);
     })
-    .then(function(res){
+    .then( res => {
       res.should.have.status(201);
       return BlogPost.findById(updateBlog.id).exec();
     })
-    .then(function(res){
+    .then( res => {
       res.title.should.equal(updateBlog.title);
     });
   });
@@ -173,16 +173,16 @@ let blogpost;
     return BlogPost
     .findOne()
     .exec()
-    .then(function(res) {
+    .then( res => {
       blogpost = res;
       return chai.request(app)
       .delete(`/posts/${blogpost.id}`)
     })
-    .then(function(res) {
+    .then( res => {
       res.should.have.status(204);
       return BlogPost.findById(blogpost.id)
     })
-    .then(function(res) {
+    .then( res => {
       should.not.exist(res)
     })
 
