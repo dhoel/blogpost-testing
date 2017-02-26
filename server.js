@@ -13,7 +13,6 @@ app.use(bodyParser.json());
 
 mongoose.Promise = global.Promise;
 
-//testing github sending requests to travis
 
 app.get('/posts', (req, res) => {
   BlogPost
